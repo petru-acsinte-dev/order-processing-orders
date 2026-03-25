@@ -7,7 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import jakarta.validation.constraints.Positive;
 
 @Component
-@ConfigurationProperties(prefix = "orders.demo.orders")
+@ConfigurationProperties(prefix = "com.orderprocessing.orders")
 @Validated
 public class OrderProps {
 

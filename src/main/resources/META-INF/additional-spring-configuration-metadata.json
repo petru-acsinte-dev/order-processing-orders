@@ -10,27 +10,27 @@
     "description": "The JWT expiration period"
   },
   {
-    "name": "orders.demo.orders.page-size",
+    "name": "com.orderprocessing.orders.page-size",
     "type": "java.lang.Integer",
     "description": "The page size for listing products, orders, order lines"
   },
   {
-    "name": "orders.demo.orders.query-max-size",
+    "name": "com.orderprocessing.orders.query-max-size",
     "type": "java.lang.Integer",
     "description": "Max size of a products list to query for"
   },
   {
-    "name": "orders.demo.orders.query-batch-size",
+    "name": "com.orderprocessing.orders.query-batch-size",
     "type": "java.lang.Integer",
     "description": "List size for querying products"
   },
   {
-    "name": "orders.demo.orders.products-default-sorting-attribute",
+    "name": "com.orderprocessing.orders.products-default-sorting-attribute",
     "type": "java.lang.String",
     "description": "The default product attribute to sort by"
   },
   {
-    "name": "orders.demo.orders.max-page-size",
+    "name": "com.orderprocessing.orders.max-page-size",
     "type": "java.lang.Integer",
     "description": "Maximum page size for request (will not overwrite system hard limit of 10_000)"
   }
