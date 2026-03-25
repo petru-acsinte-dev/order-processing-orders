@@ -46,8 +46,7 @@ jobs:
           path: target/site/jacoco/
 
       - name: Build Docker image
-        working-directory: OrdersProcessor   # correct path to Dockerfile
-        run: docker build -t ghcr.io/${{ github.repository_owner }}/order-processor:latest .
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/order-processing-orders:latest .
 
       - name: Log in to GHCR
         uses: docker/login-action@v2
@@ -57,4 +56,4 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push Docker image
-        run: docker push ghcr.io/${{ github.repository_owner }}/order-processor:latest
+        run: docker push ghcr.io/${{ github.repository_owner }}/order-processing-orders:latest
