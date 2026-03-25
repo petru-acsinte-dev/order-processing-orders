@@ -44,3 +44,16 @@ jobs:
         with:
           name: jacoco-report
           path: target/site/jacoco/
+
+      - name: Build Docker image
+        run: docker build -t ghcr.io/${{ github.repository_owner }}/order-processing-orders:latest .
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Push Docker image
+        run: docker push ghcr.io/${{ github.repository_owner }}/order-processing-orders:latest
