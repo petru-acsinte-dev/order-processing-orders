@@ -29,6 +29,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<jacoco.version>0.8.12</jacoco.version>
+		<spring-cloud.version>2025.0.1</spring-cloud.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -125,18 +126,22 @@
 		<dependency>
 			<groupId>com.orderprocessing</groupId>
 			<artifactId>order-processing-common</artifactId>
-			<version>0.1.7-SNAPSHOT</version>
+			<version>0.1.9-SNAPSHOT</version>
 		</dependency>
 		
 		<!-- common test classes -->
 		<dependency>
 		    <groupId>com.orderprocessing</groupId>
 		    <artifactId>order-processing-common</artifactId>
-		    <version>0.1.7-SNAPSHOT</version>
+		    <version>0.1.9-SNAPSHOT</version>
 		    <classifier>tests</classifier>
 		    <scope>test</scope>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+		</dependency>
 	</dependencies>
 	
 	<repositories>
@@ -220,4 +225,15 @@
 		</plugins>
 	</build>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>

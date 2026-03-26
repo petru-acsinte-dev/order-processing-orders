@@ -126,7 +126,7 @@ public class OrderController {
 		return ResponseEntity.ok(updatedOrder);
 	}
 
-	@PostMapping("/{orderId}/ship")
+	@PostMapping("/{orderId}/ship")  // TODO: to be used only by inter-service calls
 	@Operation (summary = "Marks an order as shipped",
 			description = "Marks an existing order as shipped.")
 	@ApiResponse(responseCode = "200",

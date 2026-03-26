@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,8 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.orderprocessing.common.constants.Constants;
+import com.orderprocessing.common.dto.CreateFulfillmentRequest;
 import com.orderprocessing.common.exceptions.UnauthorizedOperationException;
 import com.orderprocessing.common.security.SecurityUtils;
+import com.orderprocessing.orders.clients.ShipmentClient;
 import com.orderprocessing.orders.constants.Status;
 import com.orderprocessing.orders.dto.CreateOrderRequest;
 import com.orderprocessing.orders.dto.OrderInfo;
@@ -38,7 +39,6 @@ import com.orderprocessing.orders.entities.Order;
 import com.orderprocessing.orders.entities.OrderLine;
 import com.orderprocessing.orders.entities.OrderStatus;
 import com.orderprocessing.orders.entities.Product;
-import com.orderprocessing.orders.events.OrderConfirmedEvent;
 import com.orderprocessing.orders.exceptions.EmptyProductsListException;
 import com.orderprocessing.orders.exceptions.IncompatibleProductCurrencies;
 import com.orderprocessing.orders.exceptions.OrderCannotBeModifiedException;
@@ -50,6 +50,8 @@ import com.orderprocessing.orders.mappers.OrderMapper;
 import com.orderprocessing.orders.props.OrderProps;
 import com.orderprocessing.orders.repositories.OrderRepository;
 import com.orderprocessing.orders.repositories.ProductRepository;
+
+import feign.FeignException;
 
 @Service
 public class OrderService {
@@ -64,18 +66,18 @@ public class OrderService {
 
 	private final OrderProps orderProps;
 
-	private final ApplicationEventPublisher publisher;
+	private final ShipmentClient shipClient;
 
 	public OrderService(OrderRepository orderRepository,
 						ProductRepository productRepository,
 						OrderMapper mapper,
 						OrderProps orderProps,
-						ApplicationEventPublisher publisher) {
+						ShipmentClient shipClient) {
 		this.orderRepository = orderRepository;
 		this.productRepository = productRepository;
 		this.mapper = mapper;
 		this.orderProps = orderProps;
-		this.publisher = publisher;
+		this.shipClient = shipClient;
 	}
 
 	/**
@@ -159,9 +161,9 @@ public class OrderService {
 
 		order.setStatus(new OrderStatus(newOrderStatus.getId(), newOrderStatus.name()));
 
-		// FIXME: Convert to a Kafka/RabbitMQ event once shipment service and a message broker are available
+		// TODO: Convert to a Kafka/RabbitMQ event once shipment service and a message broker are available
 		if (Status.CONFIRMED == newOrderStatus) {
-			publisher.publishEvent(new OrderConfirmedEvent(order.getExternalId()));
+			generateFulfillment(orderExternalId);
 		}
 
 		return mapper.toInfo(order);
@@ -414,4 +416,13 @@ public class OrderService {
 		throw new OrderCannotBeModifiedException(orderExternalId, orderStatus.name());
 	}
 
+	private void generateFulfillment(UUID orderExternalId) {
+		try {
+			shipClient.createFulfillment(new CreateFulfillmentRequest(orderExternalId));
+		} catch (final FeignException e) {
+		    // TODO: implement retry/saga when message broker is introduced
+		    log.error("Failed to generate fulfillment for order {}. FeignException: {}", //$NON-NLS-1$
+		            orderExternalId, e.getMessage());
+		}
+	}
 }
