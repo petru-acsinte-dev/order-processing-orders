@@ -32,6 +32,7 @@ public class SecurityConfig {
                     Constants.SWAGGER_UI,
                     Constants.V3_API_DOCS
                 ).permitAll()
+                .requestMatchers(Constants.ACTUATOR_OTHERS).hasAuthority(Constants.ADMIN_ROLE)
                 .anyRequest().authenticated()
             )
             .sessionManagement(sess -> sess

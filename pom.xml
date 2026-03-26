@@ -121,19 +121,24 @@
 			<artifactId>postgresql</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+		    <groupId>net.logstash.logback</groupId>
+		    <artifactId>logstash-logback-encoder</artifactId>
+		    <version>7.4</version>
+		</dependency>
 		
 		<!-- Order processing common library -->
 		<dependency>
 			<groupId>com.orderprocessing</groupId>
 			<artifactId>order-processing-common</artifactId>
-			<version>0.1.9-SNAPSHOT</version>
+			<version>0.2.0-SNAPSHOT</version>
 		</dependency>
 		
 		<!-- common test classes -->
 		<dependency>
 		    <groupId>com.orderprocessing</groupId>
 		    <artifactId>order-processing-common</artifactId>
-		    <version>0.1.9-SNAPSHOT</version>
+		    <version>0.2.0-SNAPSHOT</version>
 		    <classifier>tests</classifier>
 		    <scope>test</scope>
 		</dependency>
