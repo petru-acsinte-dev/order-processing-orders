@@ -1,24 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration>
 <configuration>
-	<include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <springProfile name="!local">
-        <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
-        </appender>
+
+    <!-- App name -->
+    <property name="APP_NAME" value="order-processing-orders"/>
+
+    <!-- Common log pattern (with correlation ID) -->
+    <property name="LOG_PATTERN"
+          value="%d{HH:mm:ss} [%X{requestId}] %-5level %logger{36} - %msg %kvp%n"/>
+
+    <!-- Console (stdout) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Rolling file (only used in local) -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/${APP_NAME}.log</file>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/${APP_NAME}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>5</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Async wrapper for file logging -->
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>5000</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="FILE"/>
+    </appender>
+
+    <!-- Noise reduction -->
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.hibernate.SQL" level="WARN"/>
+    <logger name="org.testcontainers" level="WARN"/>
+    
+    <!-- LOCAL (STS debugging) -->
+    <springProfile name="local">
+
+        <!-- Your code: verbose -->
+        <logger name="com.orderprocessing" level="DEBUG"/>
+
         <root level="INFO">
-            <appender-ref ref="JSON"/>
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ASYNC_FILE"/>
         </root>
     </springProfile>
 
-    <springProfile name="local">
-        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder>
-                <pattern>%d{HH:mm:ss} [%X{X-Request-ID}] %-5level %logger{36} - %msg%n</pattern>
-            </encoder>
-        </appender>
+    <!-- TEST (JUnit + Testcontainers) -->
+    <springProfile name="test">
+
+        <!-- Keep tests quiet -->
+        <logger name="com.orderprocessing" level="INFO"/>
+
+        <root level="WARN">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <!-- DOCKER (Docker Desktop / compose) -->
+    <springProfile name="docker,prod">
+
+        <logger name="com.orderprocessing" level="INFO"/>
+
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
+
 </configuration>
+

@@ -53,4 +53,9 @@ public class MoneyDTO {
 				&& Objects.equals(currency.getCurrencyCode(), other.currency.getCurrencyCode());
 	}
 
+	@Override
+	public String toString() {
+		return "MoneyDTO [amount=" + amount + ", currency=" + currency + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	}
+
 }

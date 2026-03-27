@@ -37,4 +37,9 @@ public class OrderLineRequest {
 		this.quantity = quantity;
 	}
 
+	@Override
+	public String toString() {
+		return "OrderLineRequest [productId=" + productId + ", quantity=" + quantity + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	}
+
 }

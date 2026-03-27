@@ -21,4 +21,10 @@ public class CreateProductRequest extends AbstractProductDTO {
 		this.sku = sku;
 	}
 
+	@Override
+	public String toString() {
+		return "CreateProductRequest [sku=" + sku + ", name=" + getName() + ", description=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ getDescription() + ", cost=" + getCost() + "]";  //$NON-NLS-1$//$NON-NLS-2$
+	}
+
 }

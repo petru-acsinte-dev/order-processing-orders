@@ -6,6 +6,8 @@ import static com.orderprocessing.orders.constants.Constants.PRODUCTS_PATH;
 import java.net.URI;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +47,8 @@ import jakarta.validation.constraints.NotBlank;
 @RequestMapping(path = PRODUCTS_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProductController {
 
+	Logger log = LoggerFactory.getLogger(ProductController.class);
+
 	private final ProductService service;
 
 	public ProductController(ProductService service) {
@@ -68,6 +72,9 @@ public class ProductController {
 	public ResponseEntity<PagedResponse<ProductResponse>> getAvailableProducts(	@ParameterObject
 																				@Parameter(required = false)
 																				Pageable pageable) {
+		log.debug("getAvailableProducts(page={}, size={}, sort={})",  //$NON-NLS-1$
+				pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
+
 		final Page<ProductResponse> page = service.getProducts(pageable);
 
 		return ResponseUtils.getPagedResponse(PRODUCTS_PATH, page);
@@ -91,6 +98,9 @@ public class ProductController {
 		content = @Content(schema = @Schema(hidden = true)))
 	public ProductResponse updateProduct(@RequestParam(required = true) @NotBlank String externalId,
 				@Valid @RequestBody UpdateProductRequest updateRequest) {
+		log.debug("updateProduct({}, name={}, desc={}, cost={})", externalId,  //$NON-NLS-1$
+				updateRequest.getName(), updateRequest.getDescription(), updateRequest.getCost());
+
 		final UUID uuid = UUID.fromString(externalId);
 		return service.updateProduct(uuid, updateRequest);
 	}
@@ -113,6 +123,8 @@ public class ProductController {
 		description = "Product not found",
 		content = @Content(schema = @Schema(hidden = true)))
 	public ResponseEntity<ProductResponse> deleteProduct(@RequestParam(required = true) @NotBlank String externalId) {
+		log.debug("deleteProduct({})", externalId); //$NON-NLS-1$
+
 		final UUID uuid = UUID.fromString(externalId);
 		service.deleteProduct(uuid);
 		return ResponseEntity
@@ -137,6 +149,8 @@ public class ProductController {
 			description = "Product not found",
 			content = @Content(schema = @Schema(hidden = true)))
 	public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody CreateProductRequest createRequest) {
+		log.debug("createProduct({})", createRequest); //$NON-NLS-1$
+
 		final ProductResponse newProduct = service.createProduct(createRequest);
 		return ResponseEntity
 				.created(URI.create(String.format(LOCATION_TEMPLATE, PRODUCTS_PATH, newProduct.getExternalId())))

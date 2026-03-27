@@ -5,6 +5,8 @@ import static com.orderprocessing.orders.constants.Constants.ORDERS_PATH;
 import java.net.URI;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -44,6 +46,8 @@ import jakarta.validation.Valid;
 @RequestMapping(path = ORDERS_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
 public class OrderController {
 
+	private static final Logger log = LoggerFactory.getLogger(OrderController.class);
+
 	private final OrderService service;
 
 	public OrderController(OrderService service) {
@@ -64,6 +68,10 @@ public class OrderController {
 			description = "Product not found",
 			content = @Content(schema = @Schema(hidden = true)))
 	public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest createRequest) {
+		if (log.isDebugEnabled()) {
+			log.debug("createOrder({})", createRequest.getProducts()); //$NON-NLS-1$
+		}
+
 		final OrderResponse newOrder = service.createOrder(createRequest);
 		return ResponseEntity
 				.created(URI.create(String.format(Constants.LOCATION_TEMPLATE,
@@ -87,6 +95,11 @@ public class OrderController {
 	public ResponseEntity<OrderResponse> updateOrder(
 			@PathVariable UUID orderId,
 			@Valid @RequestBody UpdateOrderRequest updateRequest) {
+		if (log.isDebugEnabled()) {
+			log.debug("updateOrder({}, upsert={}, remove={})", orderId,  //$NON-NLS-1$
+					updateRequest.getUpsertProducts(), updateRequest.getRemovedProducts());
+		}
+
 		final OrderResponse changedOrder = service.updateOrder(orderId, updateRequest);
 		return ResponseEntity
 				.ok(changedOrder);
@@ -105,6 +118,8 @@ public class OrderController {
 			description = "Order not found",
 			content = @Content(schema = @Schema(hidden = true)))
 	public ResponseEntity<OrderInfo> cancelOrder(@PathVariable UUID orderId) {
+		log.debug("cancelOrder({})", orderId); //$NON-NLS-1$
+
 		final OrderInfo updatedOrder = service.updateOrder(orderId, Status.CANCELLED);
 		return ResponseEntity.ok(updatedOrder);
 	}
@@ -122,6 +137,8 @@ public class OrderController {
 			description = "Order not found",
 			content = @Content(schema = @Schema(hidden = true)))
 	public ResponseEntity<OrderInfo> confirmOrder(@PathVariable UUID orderId) {
+		log.debug("confirmOrder({})", orderId); //$NON-NLS-1$
+
 		final OrderInfo updatedOrder = service.updateOrder(orderId, Status.CONFIRMED);
 		return ResponseEntity.ok(updatedOrder);
 	}
@@ -139,6 +156,8 @@ public class OrderController {
 			description = "Order not found",
 			content = @Content(schema = @Schema(hidden = true)))
 	public ResponseEntity<OrderInfo> shipOrder(@PathVariable UUID orderId) {
+		log.debug("shipOrder({})", orderId); //$NON-NLS-1$
+
 		final OrderInfo updatedOrder = service.updateOrder(orderId, Status.SHIPPED);
 		return ResponseEntity.ok(updatedOrder);
 	}
@@ -156,6 +175,8 @@ public class OrderController {
 			description = "Order not found",
 			content = @Content(schema = @Schema(hidden = true)))
 	public ResponseEntity<OrderResponse> getOrder(@PathVariable UUID orderId) {
+		log.debug("getOrder({})", orderId); //$NON-NLS-1$
+
 		final OrderResponse order = service.getOrder(orderId);
 		return ResponseEntity.ok(order);
 	}
@@ -177,6 +198,9 @@ public class OrderController {
 	public ResponseEntity<PagedResponse<OrderInfo>> getOrders(
 			@RequestParam(required = false) UUID ownerId,
 			@ParameterObject @Parameter(required = false) Pageable pageable) {
+		log.debug("getOrders(owner={}, page={}, size={}, sort={})",  //$NON-NLS-1$
+				ownerId, pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort());
+
 		final var page = service.getOrders(ownerId, pageable);
 
 		return ResponseUtils.getPagedResponse(ORDERS_PATH, page);
