@@ -25,10 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.orderprocessing.common.constants.Constants;
-import com.orderprocessing.common.dto.CreateFulfillmentRequest;
 import com.orderprocessing.common.exceptions.UnauthorizedOperationException;
 import com.orderprocessing.common.security.SecurityUtils;
-import com.orderprocessing.orders.clients.ShipmentClient;
 import com.orderprocessing.orders.constants.Status;
 import com.orderprocessing.orders.dto.CreateOrderRequest;
 import com.orderprocessing.orders.dto.OrderInfo;
@@ -48,11 +46,10 @@ import com.orderprocessing.orders.exceptions.ProductNotFoundException;
 import com.orderprocessing.orders.exceptions.TooManyProductsInRequest;
 import com.orderprocessing.orders.exceptions.UnknownOrderStatusException;
 import com.orderprocessing.orders.mappers.OrderMapper;
+import com.orderprocessing.orders.messaging.OrderEventPublisher;
 import com.orderprocessing.orders.props.OrderProps;
 import com.orderprocessing.orders.repositories.OrderRepository;
 import com.orderprocessing.orders.repositories.ProductRepository;
-
-import feign.FeignException;
 
 @Service
 public class OrderService {
@@ -67,7 +64,7 @@ public class OrderService {
 
 	private final OrderProps orderProps;
 
-	private final ShipmentClient shipClient;
+	private final OrderEventPublisher eventPublisher;
 
 	@Value("${enable.feign.notifications}")
 	private boolean feignEnabled;
@@ -76,12 +73,12 @@ public class OrderService {
 						ProductRepository productRepository,
 						OrderMapper mapper,
 						OrderProps orderProps,
-						ShipmentClient shipClient) {
+						OrderEventPublisher publisher) {
 		this.orderRepository = orderRepository;
 		this.productRepository = productRepository;
 		this.mapper = mapper;
 		this.orderProps = orderProps;
-		this.shipClient = shipClient;
+		this.eventPublisher = publisher;
 	}
 
 	/**
@@ -165,9 +162,8 @@ public class OrderService {
 
 		order.setStatus(new OrderStatus(newOrderStatus.getId(), newOrderStatus.name()));
 
-		// TODO: Convert to a Kafka/RabbitMQ event once shipment service and a message broker are available
 		if (Status.CONFIRMED == newOrderStatus) {
-			generateFulfillment(orderExternalId);
+			eventPublisher.publishOrderConfirmed(orderExternalId);
 		}
 
 		return mapper.toInfo(order);
@@ -420,15 +416,4 @@ public class OrderService {
 		throw new OrderCannotBeModifiedException(orderExternalId, orderStatus.name());
 	}
 
-	private void generateFulfillment(UUID orderExternalId) {
-		try {
-			if (feignEnabled) {
-				shipClient.createFulfillment(new CreateFulfillmentRequest(orderExternalId));
-			}
-		} catch (final FeignException e) {
-		    // TODO: implement retry/saga when message broker is introduced
-		    log.error("Failed to generate fulfillment for order {}. FeignException: {}", //$NON-NLS-1$
-		            orderExternalId, e.getMessage());
-		}
-	}
 }

@@ -131,14 +131,14 @@
 		<dependency>
 			<groupId>com.orderprocessing</groupId>
 			<artifactId>order-processing-common</artifactId>
-			<version>0.2.1-SNAPSHOT</version>
+			<version>0.3.0-SNAPSHOT</version>
 		</dependency>
 		
 		<!-- common test classes -->
 		<dependency>
 		    <groupId>com.orderprocessing</groupId>
 		    <artifactId>order-processing-common</artifactId>
-		    <version>0.2.1-SNAPSHOT</version>
+		    <version>0.3.0-SNAPSHOT</version>
 		    <classifier>tests</classifier>
 		    <scope>test</scope>
 		</dependency>
