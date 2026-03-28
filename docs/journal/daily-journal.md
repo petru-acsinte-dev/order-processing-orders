@@ -14,3 +14,15 @@ OrderProcessor - Orders microservice - Daily journal
 2026-03-26
 -
 - added fulfillments(i.e. shipments service) Feign client to mark orders as confirmed and generate fulfillments
+- enabled actuator (more endpoints), logback
+- revisited serviceability
+
+2026-03-27
+-
+- serviceability revisited
+- updated readme with more details about this orders service
+
+2026-03-28
+-
+- Introduced RabbitMQ for orders-shipments communication
+- Adopted common 0.4.0 with enhanced RabbitMQ events
