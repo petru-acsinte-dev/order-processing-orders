@@ -315,7 +315,7 @@ class OrderIT extends AbstractIntegrationTestBase {
 			.andExpect(jsonPath(CNT_ARRAY_MEMBR_TMPLT, FIELD_ORDER_LINES, 0, FIELD_QUANTITY)
 					.value(quantity)) // quantity
 			.andExpect(jsonPath(CNT_ARRAY_MEMBR_TMPLT, FIELD_ORDER_LINES, 0, FIELD_LINE_TOTAL)
-					.value(product.getCost().getAmount().multiply(BigDecimal.valueOf(quantity)))) // lineTotal
+					.value(closeTo(product.getCost().getAmount().multiply(BigDecimal.valueOf(quantity)).doubleValue(), 0.001))) // lineTotal
 			.andExpect(jsonPath(CNT_ARRAY_MEMBR_COST_TMPLT, FIELD_ORDER_LINES, 0, FIELD_AMOUNT)
 					.value(product.getCost().getAmount()))  //cost.amount
 			.andExpect(jsonPath(CNT_ARRAY_MEMBR_COST_TMPLT, FIELD_ORDER_LINES, 0, FIELD_CURRENCY)

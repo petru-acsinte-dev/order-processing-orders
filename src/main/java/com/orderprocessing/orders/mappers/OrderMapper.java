@@ -1,6 +1,9 @@
 package com.orderprocessing.orders.mappers;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Currency;
 import java.util.Locale;
 
@@ -46,5 +49,12 @@ public interface OrderMapper {
     @Mapping(target = "orderTotal", source = "order", qualifiedByName = "mapOrderTotal")
 	@Mapping(target = "status", source = "order", qualifiedByName = "mapOrderStatus")
     OrderInfo toInfo(Order order);
+
+    default OffsetDateTime toOffsetDateTime(LocalDateTime localDateTime) {
+        if (localDateTime == null) {
+            return null;
+        }
+        return localDateTime.atOffset(ZoneOffset.UTC);
+    }
 
 }

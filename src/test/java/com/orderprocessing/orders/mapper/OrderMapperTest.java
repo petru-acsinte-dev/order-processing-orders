@@ -97,7 +97,7 @@ class OrderMapperTest {
 
 		// to response DTO
 		final OrderResponse response = orderMapper.orderToOrderResponse(order);
-		assertEquals(now, response.getCreated());
+		assertEquals(now, response.getCreated().toLocalDateTime());
 		assertEquals(order.getExternalId(), response.getExternalId());
 		assertEquals(userExternalId, response.getCustomerExternalId());
 		assertEquals(orderStatus.getStatus(), response.getStatus());

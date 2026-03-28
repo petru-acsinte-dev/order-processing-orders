@@ -1,6 +1,6 @@
 package com.orderprocessing.orders.dto;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,7 +30,7 @@ public class OrderInfo {
 
 	@NotNull
 	@Schema(description = "The order creation date")
-	private LocalDateTime created;
+	private OffsetDateTime created;
 
 	@Embedded
 	private MoneyDTO orderTotal;
@@ -59,11 +59,11 @@ public class OrderInfo {
 		this.status = status;
 	}
 
-	public LocalDateTime getCreated() {
+	public OffsetDateTime getCreated() {
 		return created;
 	}
 
-	public void setCreated(LocalDateTime created) {
+	public void setCreated(OffsetDateTime created) {
 		this.created = created;
 	}
 
