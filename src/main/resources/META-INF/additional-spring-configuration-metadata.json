@@ -43,5 +43,15 @@
     "name": "shipments.service.url",
     "type": "java.lang.String",
     "description": "The URL of shipments service endpoint"
+  },
+  {
+    "name": "openapi.title",
+    "type": "java.lang.String",
+    "description": "API title for orders OpenAPI"
+  },
+  {
+    "name": "openapi.version",
+    "type": "java.lang.String",
+    "description": "OpenAPI version"
   }
 ]}

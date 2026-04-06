@@ -16,7 +16,7 @@ initiate fulfillment.
 - Inter-service notification to shipments on order confirmation
 
 ### Key Technologies
-- Spring Boot 3.5 · Spring Security · PostgreSQL · Flyway · MapStruct · OpenFeign · Testcontainers
+- Spring Boot 3.5 · Spring Security · PostgreSQL · Flyway · MapStruct · RabbitMQ · Testcontainers
 
 ### Related
 - [order-processing-common](https://github.com/petru-acsinte-dev/order-processing-common) — shared library
