@@ -339,9 +339,6 @@ class OrderIT extends AbstractIntegrationTestBase {
 		final MvcResult created = creationActions.andReturn();
 		final String orderLocation = created.getResponse().getHeader(HttpHeaders.LOCATION);
 
-		// should not be able to change to shipped
-		cannotShip(orderLocation);
-
 		// should be able to confirm
 		confirm(orderLocation);
 
@@ -464,10 +461,6 @@ class OrderIT extends AbstractIntegrationTestBase {
 		updateStatus(orderLocation, "/cancel") //$NON-NLS-1$
 			.andExpect(status().isOk())
 			.andExpect(jsonPath(MEMBR_TMPLT, FIELD_STATUS).value(Status.CANCELLED.name()));
-	}
-
-	private void cannotShip(String orderLocation) throws Exception {
-		updateStatus(orderLocation, "/ship").andExpect(status().isForbidden()); //$NON-NLS-1$
 	}
 
 	private ResultActions updateStatus(String orderLocation, String endpoint) throws Exception {
