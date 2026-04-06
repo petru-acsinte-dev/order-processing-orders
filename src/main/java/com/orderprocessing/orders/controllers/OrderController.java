@@ -143,25 +143,6 @@ public class OrderController {
 		return ResponseEntity.ok(updatedOrder);
 	}
 
-	@PostMapping("/{orderId}/ship")  // TODO: to be used only by inter-service calls
-	@Operation (summary = "Marks an order as shipped",
-			description = "Marks an existing order as shipped.")
-	@ApiResponse(responseCode = "200",
-			content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-			schema = @Schema(implementation = OrderInfo.class)))
-	@ApiResponse (responseCode = "403",
-			description = "The user does not have permissions to mark the order as shipped",
-			content = @Content(schema = @Schema(hidden = true)))
-	@ApiResponse (responseCode = "404",
-			description = "Order not found",
-			content = @Content(schema = @Schema(hidden = true)))
-	public ResponseEntity<OrderInfo> shipOrder(@PathVariable UUID orderId) {
-		log.debug("shipOrder({})", orderId); //$NON-NLS-1$
-
-		final OrderInfo updatedOrder = service.updateOrder(orderId, Status.SHIPPED);
-		return ResponseEntity.ok(updatedOrder);
-	}
-
 	@GetMapping("/{orderId}")
 	@Operation (summary = "Retrieves an order",
 			description = "Retrieves an order and its contents.")

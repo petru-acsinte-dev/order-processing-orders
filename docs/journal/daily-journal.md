@@ -27,3 +27,7 @@ OrderProcessor - Orders microservice - Daily journal
 - Introduced RabbitMQ for orders-shipments communication
 - Adopted common 0.4.0 with enhanced RabbitMQ events
 - Replaced LocalDateTime with OffsetDateTime in API responses
+
+2026-04-06
+-
+- Removed /orders/{orderId}/ship endpoint from orders controller as it is no longer necessary (used to be called by Feign to mark an order as shipped after the shipment record was created)
