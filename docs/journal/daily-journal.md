@@ -31,3 +31,4 @@ OrderProcessor - Orders microservice - Daily journal
 2026-04-06
 -
 - Removed /orders/{orderId}/ship endpoint from orders controller as it is no longer necessary (used to be called by Feign to mark an order as shipped after the shipment record was created)
+- Fixed an authentication failure in orders consumer by using an internal dedicated orders service method

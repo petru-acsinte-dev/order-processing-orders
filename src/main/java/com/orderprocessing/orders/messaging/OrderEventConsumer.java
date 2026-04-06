@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import com.orderprocessing.common.configurations.RabbitMQConfig;
 import com.orderprocessing.common.constants.Constants;
 import com.orderprocessing.common.events.OrderShippedEvent;
-import com.orderprocessing.orders.constants.Status;
 import com.orderprocessing.orders.services.OrderService;
 
 @Component
@@ -31,7 +30,7 @@ public class OrderEventConsumer {
 		MDC.put(Constants.CORRELATION_ID, event.correlationId());
 		try {
 			log.info("Received OrderShippedEvent for order {}", orderId); //$NON-NLS-1$
-			orderService.updateOrder(orderId, Status.SHIPPED);
+			orderService.markOrderAsShippedBasedonEvent(orderId);
 		} finally {
 			MDC.remove(Constants.CORRELATION_ID);
 		}

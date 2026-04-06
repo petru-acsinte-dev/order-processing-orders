@@ -170,6 +170,31 @@ public class OrderService {
 	}
 
 	/**
+	 * Marks an existing order status if the current status allows the update.
+	 * A cancelled or shipped order cannot have its status changed.
+	 * A confirmed order can be shipped.
+	 * @param orderExternalId Order unique external UUID.
+	 * @return The updated order simplified response DTO.
+	 * @throws OrderCannotBeModifiedException if the order status does not allow modifications.
+	 */
+	@Transactional
+	public OrderInfo markOrderAsShippedBasedonEvent(UUID orderExternalId) {
+		final Order order = orderRepository.findByExternalId(orderExternalId)
+				.orElseThrow(() -> new OrderNotFoundException(orderExternalId));
+
+		// check if current status allows the update
+		final String currentStatus = order.getStatus().getStatus();
+		final var existingStatus = Status.valueOf(currentStatus);
+		if (Status.CONFIRMED != existingStatus) {
+			badStatus(orderExternalId, existingStatus);
+		}
+
+		order.setStatus(new OrderStatus(Status.SHIPPED.getId(), Status.SHIPPED.name()));
+
+		return mapper.toInfo(order);
+	}
+
+	/**
 	 * Returns the order for the specified external Id.
 	 * @param externalId The order unique external identifier.
 	 * @return {@link OrderResponse} DTO with order details.
