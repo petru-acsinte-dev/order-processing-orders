@@ -35,16 +35,6 @@
     "description": "Maximum page size for request (will not overwrite system hard limit of 10_000)"
   },
   {
-    "name": "enable.feign.notifications",
-    "type": "java.lang.Boolean",
-    "description": "Enables inter-service Feign client"
-  },
-  {
-    "name": "shipments.service.url",
-    "type": "java.lang.String",
-    "description": "The URL of shipments service endpoint"
-  },
-  {
     "name": "openapi.title",
     "type": "java.lang.String",
     "description": "API title for orders OpenAPI"

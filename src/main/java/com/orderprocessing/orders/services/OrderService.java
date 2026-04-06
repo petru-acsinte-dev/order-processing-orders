@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -65,9 +64,6 @@ public class OrderService {
 	private final OrderProps orderProps;
 
 	private final OrderEventPublisher eventPublisher;
-
-	@Value("${enable.feign.notifications}")
-	private boolean feignEnabled;
 
 	public OrderService(OrderRepository orderRepository,
 						ProductRepository productRepository,
