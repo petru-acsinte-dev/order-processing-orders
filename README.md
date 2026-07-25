@@ -10,7 +10,7 @@ initiate fulfillment.
 
 **REST API** — explore and test via Swagger UI:
 - Local: `http://localhost:8081/orders/swagger-ui/index.html`
-- Live: `http://52.205.87.85/orders/swagger-ui/index.html`
+- Live: previously deployed on AWS; taken down after the free-tier period to avoid ongoing charges
 
 ### Responsibilities
 - Product catalogue management (admin only)
